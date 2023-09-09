@@ -1,0 +1,22 @@
+uma aplicação para controlar dieta
+funcionalidades:
+
+criação de usuario
+identificar usuario entre requisições (usando cookie?)
+adição de refição com os seguintes campos :
+     nome 
+     descrição 
+     data e hora 
+     dentro ou não da dieta(enum)
+alteração da refeição podendo alterar todos os dados acima
+deletar refeição
+listar todas as refeição de um usuario
+listar apenas uma refeição
+recuperar metricas de um usuario :
+     quantidade de refeições totais
+     quantidade dentro ou não da dieta 
+     melhor sequencia de refeições dentro a dieta
+o usuario so pode interagir com as refeições que ele criou.
+
+esse é o frontend da aplicação para a gente poder ter ula ideia de como ficaria
+https://www.figma.com/community/file/1218573349379609244/Daily-Diet-%E2%80%A2-Desafio-React-Native
