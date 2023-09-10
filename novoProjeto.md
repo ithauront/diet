@@ -149,6 +149,18 @@ export const config = {
 
 export const knex = setupKnex(config)
 
+vamos na rota server.ts
+vamos na rota hello e transformamos ela em async e nela eu passo uma const tables e ela vai ser igual o await da promisse do knex do batabase e para elea gente passa uma tabela padrão do sqlite apenas para testar qiue é a sqlite_schema  e damos um select'*'
+fica assim:
+app.get('/hello', async () => {
+  const tables = await knex('sqlite_schema').select('*')
+  return tables
+})
+temos que criar uma pasta tmp ou temp a depender de como escrevemos para o programa achar a pasta para criar o app.db
+se agora a gente der um npm run dev ele vai criar a pasta temp com o nosso banco de dados.
+a gente tambem vai no gitignore e coloca o nosso temp/app.db nele para que o nosso banco de dados não suba para o github.
+
+
 acho que perdi parte de minhas anotação mas fazrmos um arquivo knexfile.
 nos tambem  com esse qrquivo a gente roda o script lembrando que tem que estar no node versão 18 rodamos o script do kenx colocando como arquivo binario do kenx no executavel.
 assim podemos rodar ele com o tsx.

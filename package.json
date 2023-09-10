@@ -1,14 +1,17 @@
 {
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "knex": "node --loader tsx ./node_modules/knex/bin/cli.js"
   },
   "dependencies": {
     "fastify": "^4.22.2",
+    "knex": "^2.5.1",
+    "sqlite3": "^5.1.6",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.1.0",
-    "@types/node": "^20.6.0",
+    "@types/node": "18.16.1",
     "eslint": "^8.49.0",
     "tsx": "^3.12.8"
   }
