@@ -160,10 +160,74 @@ temos que criar uma pasta tmp ou temp a depender de como escrevemos para o progr
 se agora a gente der um npm run dev ele vai criar a pasta temp com o nosso banco de dados.
 a gente tambem vai no gitignore e coloca o nosso temp/app.db nele para que o nosso banco de dados não suba para o github.
 
+para criar a primeira migration precisamos fazer algumas coisas na aplicação
+quando a gente instala o knex tem um arquivo binario dele dentro do node_modules
+para criar uma migrate a gente pode fazer npx knex migrate:make (nome a tabela com o que a gente quer que a tabela faça no banco de dados.)
+porem se a gente fizer assim vai dar erro porque ele não sabe que as configurações do banco de dados esta no database.ts
+para que o knex entenda nossas configurações existe uma convenção de criar o arquivo knexfile.ts (o padrão é js) e dentro desse arquivo vamos fazer é importar as configuraçéoes do banco. porem a gente não quer importar a conexão com o banco ou seja não vamos importar o knex do database e siml so o que esta dentro do setup knex.
+então a gente separa o que esta dentro do knex em uma outra const chamada config e exporta ela mas tambem passa ela para dentro da const knex fica assim o database.ts:
+import { knex as setupKnex } from 'knex'
+export const config = {
+  client: 'sqlite',
+  connection: {
+    filename: './tmp/app.db',
+  },
+  useNullAsDefault: true,
+}
 
-acho que perdi parte de minhas anotação mas fazrmos um arquivo knexfile.
-nos tambem  com esse qrquivo a gente roda o script lembrando que tem que estar no node versão 18 rodamos o script do kenx colocando como arquivo binario do kenx no executavel.
-assim podemos rodar ele com o tsx.
+export const knex = setupKnex(config)
+
+agora no knexfile a gente vai importar do database apenas o config e exportar essas config de novo.
+assim:
+import { config } from './src/database'
+
+export default config
+
+porem ainda vai dar erro porque ele ve que o arquivo é um typescript mas nos não temos instalado as bibliotecas para resolver isso em typescript o que temos é a tsc que o knex não usa.  
+para resolver isso nos vamos criar um novo script chamado knex que vai executar o node e passar a opção loadet que vai carregar uma biblioteca para executar o codigo ( no caso a tsx) e ai a gente passa o caminho do binario do knex "knex": "node --loader tsx ./node_modules/knex/bin/cli.js"
+ai para rodar ele a gente tem que usar o node na verão 18 ou seja
+ nvm use 18 
+
+ e agora para fazer a tabela a gente vai dar o npm run knex que vai puxar toda a gambiarra e depois a gente passa -- para mandar um comando para o knex e ai a gente passa o nosso migrate:make create-documents fica assim a sequencia de comandos
+ ➜  diet git:(main) ✗ nvm use 18.16.1
+Now using node v18.16.1 (npm v9.5.1)
+➜  diet git:(main) ✗ npm run knex -- migrate:make create-documents
+
+ai ele cria uma pasta migrate com um arquivo com a data e vazio esse arquivo vai vir com dois metodos o up e down para a gente escrever o que vai fazer e o down para a gente desfazer, ou seja um rollback. assim fica a migrate criada e virgem:
+import { Knex } from "knex";
+
+
+export async function up(knex: Knex): Promise<void> {
+}
+
+
+export async function down(knex: Knex): Promise<void> {
+}
+
+
+porem a gente pode melhorar um pouco la no daabase algumas propriedades para a migration. para isso vamos importar de la do knex o Knex com k maiucuslo no database.ts e vamos dizer que o config precisa usar a interface Knex.Config
+agora deppis do nullByDefault rtue a gente pode dar um cntrl espaço e usar muita coisa que aparace e nos vamos usar a opção migrations para ela vamos passar extensione e directory em um objeto.
+antes de configurar vamos mudar o nome de nossa pasta temp para db
+e dentro dessa db nos vamos salvar migrations no filename tambem mudamps de temp para db e no gitignore tambem. o arquivio databqase fica assim:
+import { knex as setupKnex, Knex } from 'knex'
+
+export const config: Knex.Config = {
+  client: 'sqlite',
+  connection: {
+    filename: './db/app.db',
+  },
+  useNullAsDefault: true,
+  migrations: {
+    extension: 'ts',
+    directory: './db/migrations',
+  },
+}
+
+export const knex = setupKnex(config)
+
+
+se agora a gente deletar a pasta migrations e rodar o comando migrate:make de novo e ele vai criar a pasta migration dentro da db.
+
 
 o kenx vai criar um banco de dados com a data precisa como nome.
 para podermos migrar para outras plataformas de banco de dados mais tarde é bom lembrar que temos que manter a sintaxe do banco de dados padrão.
