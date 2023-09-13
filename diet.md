@@ -11,7 +11,8 @@ identificar usuario entre requisições (usando cookie?)
      data e hora 
      dentro ou não da dieta(enum)
       
-alteração da refeição podendo alterar todos os dados acima
+(V)alteração da refeição podendo alterar todos os dados acima (pelo que vi no frontend altera todos os dados de uma vez.)
+
 
 deletar refeição
 
@@ -23,7 +24,7 @@ recuperar metricas de um usuario :
      quantidade de refeições totais
      quantidade dentro ou não da dieta 
      melhor sequencia de refeições dentro a dieta
-     
+
 o usuario so pode interagir com as refeições que ele criou.
 
 esse é o frontend da aplicação para a gente poder ter ula ideia de como ficaria
