@@ -12,5 +12,13 @@ declare module 'knex/types/tables' {
       dateOfMeal: string
       isPartOfDiet: string
     }
+    users: {
+      id: string
+      userName: string
+      userEmail: string
+      userPassword: string
+      created_at: string
+      profileImage: string
+    }
   }
 }
