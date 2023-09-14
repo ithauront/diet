@@ -3,7 +3,7 @@ funcionalidades:
 
 criação de usuario
 
-identificar usuario entre requisições (usando cookie?)
+identificar usuario entre requisições (primary e forign key?)
 
 (V)adição de refeição com os seguintes campos :
      nome 
@@ -11,14 +11,14 @@ identificar usuario entre requisições (usando cookie?)
      data e hora 
      dentro ou não da dieta(enum)
       
-(V)alteração da refeição podendo alterar todos os dados acima (pelo que vi no frontend altera todos os dados de uma vez.)
+(V)alteração da refeição podendo alterar todos os dados acima (pelo que vi no frontend altera todos os dados sempre, não ha a opção de altear apenas um dos dados.)
 
 
-deletar refeição
+(v)deletar refeição
 
 listar todas as refeição de um usuario
 
-listar apenas uma refeição
+(v)listar apenas uma refeição
 
 recuperar metricas de um usuario :
      quantidade de refeições totais

@@ -4,33 +4,34 @@ import crypto from 'node:crypto'
 import { z } from 'zod'
 
 export async function dietRoutes(app: FastifyInstance) {
-  app.get('/', async () => {
-    const meals = await knex('dietLog').select('*')
-    return meals
+  const idSchema = z.object({
+    id: z.string().uuid(),
   })
 
-  app.get('/:id', async (request) => {
-    const getDietParamsSchema = z.object({
-      id: z.string().uuid(),
-    })
-    const { id } = getDietParamsSchema.parse(request.params)
+  const mealSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    isPartOfDiet: z.enum(['yes', 'no']),
+    dateOfMeal: z.string(), // by what I seen from the front end I think its better to separate date and time, and also not use Date function because it is free for user to put what time he wants and not use the time of posting
+    timeOfMeal: z.string(),
+  })
+
+  app.get('/', async (request, reply) => {
+    const meals = await knex('dietLog').select('*')
+    return reply.status(200).send(meals)
+  })
+
+  app.get('/:id', async (request, reply) => {
+    const { id } = idSchema.parse(request.params)
 
     const singleMeal = await knex('dietLog').where('id', id).first()
 
-    return singleMeal
+    return reply.status(200).send(singleMeal)
   })
 
   app.post('/', async (request, reply) => {
-    const creatMealSchema = z.object({
-      title: z.string(),
-      description: z.string(),
-      isPartOfDiet: z.enum(['yes', 'no']),
-      dateOfMeal: z.string(), // by what I seen from the front end I think its better to separate date and time, and also not use Date function because it is free for user to put what time he wants and not use the time of posting
-      timeOfMeal: z.string(),
-    })
-
     const { title, description, isPartOfDiet, timeOfMeal, dateOfMeal } =
-      creatMealSchema.parse(request.body)
+      mealSchema.parse(request.body)
 
     await knex('dietLog').insert({
       id: crypto.randomUUID(),
@@ -44,19 +45,10 @@ export async function dietRoutes(app: FastifyInstance) {
   })
 
   app.put('/:id', async (request, reply) => {
-    const getDietParamsSchema = z.object({
-      id: z.string().uuid(),
-    })
-    const { id } = getDietParamsSchema.parse(request.params)
-    const updateSchema = z.object({
-      title: z.string(),
-      description: z.string(),
-      isPartOfDiet: z.enum(['yes', 'no']),
-      dateOfMeal: z.string(),
-      timeOfMeal: z.string(),
-    })
+    const { id } = idSchema.parse(request.params)
+
     const { title, description, isPartOfDiet, timeOfMeal, dateOfMeal } =
-      updateSchema.parse(request.body)
+      mealSchema.parse(request.body)
 
     await knex('dietLog').where('id', id).update({
       title,
@@ -65,6 +57,12 @@ export async function dietRoutes(app: FastifyInstance) {
       timeOfMeal,
       dateOfMeal,
     })
-    return reply.status(201).send
+    return reply.status(200).send
+  })
+
+  app.delete('/:id', async (request, reply) => {
+    const { id } = idSchema.parse(request.params)
+    await knex('dietLog').where('id', id).delete()
+    return reply.status(204).send
   })
 }
