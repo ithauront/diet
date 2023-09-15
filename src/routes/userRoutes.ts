@@ -6,8 +6,13 @@ import bcrypt from 'bcrypt'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get('/', async (request, reply) => {
-    const users = await knex('users').select('*')
-    return reply.status(200).send(users)
+    try {
+      const users = await knex('users').select('*')
+      return reply.status(200).send(users)
+    } catch (error) {
+      console.error('Erro ao buscar usuarios')
+      return reply.status(500).send({ error: 'Erro ao buscar usuarios' })
+    }
   }) // this request will not be used by the user, its just so the backend can see all the users on our database
 
   app.post('/', async (request, reply) => {
@@ -45,8 +50,18 @@ export async function userRoutes(app: FastifyInstance) {
     const idSchema = z.object({
       id: z.string().uuid(),
     })
-    const { id } = idSchema.parse(request.params)
-    await knex('users').where('id', id).delete()
-    return reply.status(204).send({ message: 'usuario deletado' })
+    try {
+      const { id } = idSchema.parse(request.params)
+      const user = await knex('users').where('id', id).first()
+      if (!user) {
+        return reply.status(404).send({ error: 'Usuario não encontrado' })
+      }
+
+      await knex('users').where('id', id).delete()
+      return reply.status(200).send({ message: 'Usuário excluído com sucesso' })
+    } catch (error) {
+      console.error('Erro ao excluir o usuario')
+      return reply.status(500).send({ error: 'Erro ao excluir o usuario' })
+    }
   })
 }
