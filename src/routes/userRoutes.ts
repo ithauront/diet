@@ -46,6 +46,41 @@ export async function userRoutes(app: FastifyInstance) {
     }
   })
 
+  app.put('/:id', async (request, reply) => {
+    const idSchema = z.object({
+      id: z.string().uuid(),
+    })
+    const { id } = idSchema.parse(request.params)
+    const userSchema = z.object({
+      userName: z.string(),
+
+      userPassword: z.string().min(8),
+    })
+    const { userName, userPassword } = userSchema.parse(request.body)
+    const saltRounds = 5
+
+    try {
+      const user = await knex('users').where('id', id).first()
+      if (!user) {
+        return reply.status(404).send({ error: 'Usuario não encontrado' })
+      }
+
+      const hashedPassword = await bcrypt.hash(userPassword, saltRounds)
+      await knex('users').where('id', id).update({
+        userName,
+        userPassword: hashedPassword,
+      }) // will not allow to update the userEmail
+      return reply
+        .status(200)
+        .send({ message: 'Atualização concluida com sucesso' })
+    } catch (error) {
+      console.error('não foi possivel atualizar usuario')
+      return reply
+        .status(500)
+        .send({ error: 'Erro ao tentar atualizar o usuario' })
+    }
+  })
+
   app.delete('/:id', async (request, reply) => {
     const idSchema = z.object({
       id: z.string().uuid(),
