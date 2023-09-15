@@ -1,7 +1,10 @@
 uma aplicação para controlar dieta
 funcionalidades:
 
-criação de usuario
+()criação de usuario
+     esquema de erros
+     impedir dois usuarios com o mesmo email
+     
 
 identificar usuario entre requisições (primary e forign key?)
 
