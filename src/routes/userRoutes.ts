@@ -5,6 +5,14 @@ import crypto from 'node:crypto'
 import bcrypt from 'bcrypt'
 
 export async function userRoutes(app: FastifyInstance) {
+  const idSchema = z.object({
+    id: z.string().uuid(),
+  })
+  const userSchema = z.object({
+    userName: z.string(),
+    userEmail: z.string().email().optional(),
+    userPassword: z.string().min(8),
+  })
   app.get('/', async (request, reply) => {
     try {
       const users = await knex('users').select('*')
@@ -16,11 +24,6 @@ export async function userRoutes(app: FastifyInstance) {
   }) // this request will not be used by the user, its just so the backend can see all the users on our database
 
   app.post('/', async (request, reply) => {
-    const userSchema = z.object({
-      userName: z.string(),
-      userEmail: z.string().email(),
-      userPassword: z.string().min(8),
-    })
     const { userName, userEmail, userPassword } = userSchema.parse(request.body)
     const saltRounds = 5
 
@@ -35,7 +38,6 @@ export async function userRoutes(app: FastifyInstance) {
       })
       return reply.status(201).send({ message: 'usuario criado' })
     } catch (error) {
-      console.error('Erro ao criar usuário:', error)
       if (error instanceof z.ZodError) {
         return reply.status(400).send({
           message: 'as informações enviadas não correspondem as espectativas',
@@ -47,15 +49,8 @@ export async function userRoutes(app: FastifyInstance) {
   })
 
   app.put('/:id', async (request, reply) => {
-    const idSchema = z.object({
-      id: z.string().uuid(),
-    })
     const { id } = idSchema.parse(request.params)
-    const userSchema = z.object({
-      userName: z.string(),
 
-      userPassword: z.string().min(8),
-    })
     const { userName, userPassword } = userSchema.parse(request.body)
     const saltRounds = 5
 
@@ -82,9 +77,6 @@ export async function userRoutes(app: FastifyInstance) {
   })
 
   app.delete('/:id', async (request, reply) => {
-    const idSchema = z.object({
-      id: z.string().uuid(),
-    })
     try {
       const { id } = idSchema.parse(request.params)
       const user = await knex('users').where('id', id).first()
