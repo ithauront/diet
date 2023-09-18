@@ -5,7 +5,7 @@ funcionalidades:
      esquema de erros v
      impedir dois usuarios com o mesmo email v
 
-() limpar as rotas ver q auestão o put no user para ter o email/userName (qual manter) e o schema
+(V) limpar as rotas ver q auestão o put no user para ter o email/userName (qual manter) e o schema
 
 
 identificar usuario entre requisições (primary e forign key?)

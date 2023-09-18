@@ -11,6 +11,7 @@ declare module 'knex/types/tables' {
       timeOfMeal: string
       dateOfMeal: string
       isPartOfDiet: string
+      userId: string
     }
     users: {
       id: string
