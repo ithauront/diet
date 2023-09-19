@@ -40,6 +40,50 @@ export async function dietRoutes(app: FastifyInstance) {
     return reply.status(200).send(singleMeal)
   })
 
+  app.get('/summary', async (request, reply) => {
+    const userId = request.cookies.userId
+    if (!userId) {
+      return reply.status(401).send({ error: 'Não autorizado' })
+    }
+
+    const meals = await knex('dietLog')
+      .where('userId', userId)
+      .orderBy('dateOfMeal', 'timeOfMeal') // order all user meals by time
+
+    let currentSequence = 0
+    let maxSequence = 0
+
+    for (let i = 0; i < meals.length; i++) {
+      // start a loop that will continue as long as it is smaller thant the size of the array we have
+      const meal = meals[i] //  a const meal for every index of the aray meals
+
+      if (meal.isPartOfDiet === 'yes') {
+        currentSequence++ // everytime a element of aray meals (whereby const meal) is yes for isPartOfDiet we will increment the current sequence
+
+        if (currentSequence > maxSequence) {
+          maxSequence = currentSequence // everytime the currentSequence is bigger than the maxSequence we will update the maxSequence with the value of currentSequence
+        }
+      } else {
+        currentSequence = 0 // everytime a meal is no for isPartOfDiet we reset the currentSequence to zero
+      }
+    }
+
+    const mealTotal = meals.length
+    const partOfDietYes = meals.filter(
+      (meal) => meal.isPartOfDiet === 'yes',
+    ).length
+    const partOfDietNo = meals.filter(
+      (meal) => meal.isPartOfDiet === 'no',
+    ).length
+
+    return reply.status(200).send({
+      mealTotal: { 'Total de reifeições': mealTotal },
+      partOfDietYes: { 'Numero de refeições dentro da dieta': partOfDietYes },
+      partOfDietNo: { 'Numero de refeições fora da dieta': partOfDietNo },
+      sequenceInDiet: `Maior sequencia dentro da dieta ${maxSequence}`,
+    })
+  })
+
   app.post('/', async (request, reply) => {
     // since we dont have learn autentification yet and I think based I'm suposed to create autentification by way of cookies as we learn on the lesson before this challenge I made this logic for "login"
     // when a user is created on the user post route it will give a cookie that will work as autentification

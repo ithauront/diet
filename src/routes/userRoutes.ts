@@ -43,7 +43,7 @@ export async function userRoutes(app: FastifyInstance) {
       }) // when a user is made it will set a cookie so the user will be able to interact with only his entries on dietLog as long as the cookie is active
       // if this cookie is no longer active the user will have to "login" as we can see on the dietRoutes post coments
       return reply.status(201).send({
-        message: `Usuario criado, por favor salve seu userId: ${id} voce pode precisar dele para "logar" no sistema`,
+        message: `Usuario criado, por favor salve seu userId: ${id} voce pode precisar dele para se identificar no sistema`,
       })
     } catch (error) {
       if (error instanceof z.ZodError) {

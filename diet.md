@@ -8,7 +8,7 @@ funcionalidades:
 (V) limpar as rotas ver q auestão o put no user para ter o email/userName (qual manter) e o schema
 
 
-identificar usuario entre requisições (primary e forign key?)
+(v) identificar usuario entre requisições (primary e forign key?)
 
 (V)adição de refeição com os seguintes campos :
      nome 
@@ -25,12 +25,15 @@ identificar usuario entre requisições (primary e forign key?)
 
 (v)listar apenas uma refeição
 
-recuperar metricas de um usuario :
-     quantidade de refeições totais
-     quantidade dentro ou não da dieta 
-     melhor sequencia de refeições dentro a dieta
+(v) recuperar metricas de um usuario :
+    (v) quantidade de refeições totais
+    (v) quantidade dentro ou não da dieta 
+    (v) melhor sequencia de refeições dentro a dieta
 
 (v)o usuario so pode interagir com as refeições que ele criou.
 
+extra fazer alguns testes para treinar
+
 esse é o frontend da aplicação para a gente poder ter ula ideia de como ficaria
 https://www.figma.com/community/file/1218573349379609244/Daily-Diet-%E2%80%A2-Desafio-React-Native
+
