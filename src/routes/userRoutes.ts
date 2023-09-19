@@ -26,21 +26,29 @@ export async function userRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
     const { userName, userEmail, userPassword } = userSchema.parse(request.body)
     const saltRounds = 5
-
+    const id = crypto.randomUUID()
     try {
       const hashedPassword = await bcrypt.hash(userPassword, saltRounds)
 
       await knex('users').insert({
-        id: crypto.randomUUID(),
+        id,
         userName,
         userEmail,
         userPassword: hashedPassword,
       })
-      return reply.status(201).send({ message: 'usuario criado' })
+
+      reply.setCookie('userId', id, {
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      }) // when a user is made it will set a cookie so the user will be able to interact with only his entries on dietLog as long as the cookie is active
+      // if this cookie is no longer active the user will have to "login" as we can see on the dietRoutes post coments
+      return reply.status(201).send({
+        message: `Usuario criado, por favor salve seu userId: ${id} voce pode precisar dele para "logar" no sistema`,
+      })
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.status(400).send({
-          message: 'as informações enviadas não correspondem as espectativas',
+          message: 'As informações enviadas não correspondem as espectativas',
         })
       } else {
         return reply.status(500).send({ error: 'Erro ao criar usuário' })
@@ -69,7 +77,7 @@ export async function userRoutes(app: FastifyInstance) {
         .status(200)
         .send({ message: 'Atualização concluida com sucesso' })
     } catch (error) {
-      console.error('não foi possivel atualizar usuario')
+      console.error('Não foi possivel atualizar usuario')
       return reply
         .status(500)
         .send({ error: 'Erro ao tentar atualizar o usuario' })

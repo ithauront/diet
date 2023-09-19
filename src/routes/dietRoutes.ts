@@ -14,13 +14,13 @@ export async function dietRoutes(app: FastifyInstance) {
     isPartOfDiet: z.enum(['yes', 'no']),
     dateOfMeal: z.string(), // by what I seen from the front end I think its better to separate date and time, and also not use Date function because it is free for user to put what time he wants and not use the time of posting
     timeOfMeal: z.string(),
-    userId: z.string().optional(), // optional so we can leave out of the put route
+    userId: z.string().optional(), // optional so we can leave out of the put route and from post route when the cookie came from user post
   })
 
   app.get('/', async (request, reply) => {
     const userId = request.cookies.userId
     if (!userId) {
-      return reply.status(401).send({ error: 'unauthorized' })
+      return reply.status(401).send({ error: 'Não autorizado' })
     }
     const meals = await knex('dietLog').where('userId', userId).select('*')
     return reply.status(200).send(meals)
@@ -30,7 +30,7 @@ export async function dietRoutes(app: FastifyInstance) {
     const { id } = idSchema.parse(request.params)
     const userId = request.cookies.userId
     if (!userId) {
-      return reply.status(401).send({ error: 'unauthorized' })
+      return reply.status(401).send({ error: 'Não autorizado' })
     }
     const singleMeal = await knex('dietLog')
       .where('id', id)
@@ -41,17 +41,33 @@ export async function dietRoutes(app: FastifyInstance) {
   })
 
   app.post('/', async (request, reply) => {
-    const { title, description, isPartOfDiet, timeOfMeal, dateOfMeal, userId } =
-      mealSchema.parse(request.body)
+    // since we dont have learn autentification yet and I think based I'm suposed to create autentification by way of cookies as we learn on the lesson before this challenge I made this logic for "login"
+    // when a user is created on the user post route it will give a cookie that will work as autentification
+    // if the user still as this cookie on browser when he post a meal it will post to his meals since the dietLog as an userId column
+    // if the cookie is no longer active I was faced with the problem of the user losing access of his dietLog
+    // the solution that I came up whit was that when I user is created he is given his Iduser that he has to remember
+    // now if the cookie is no longer active the user can send his userId in the body of request and he will be able to post a meal on his dietLog
+    // also when the user provides his userId a new cookie will be created with his userId, servin the propurse of a new "login"
+    // ps: I realize now that I could use the userPassword for user to send in the body of request but I would have problems with security of sending a password on the body of request and also would hae to do migrations to change the foring key on table etc, the userName or email could be the also used but it would be to easy for someone other than the user to guess and have acess of his data
+
+    let userId = request.cookies.userId
+
+    if (!userId) {
+      const { userId: bodyUserId } = mealSchema.parse(request.body)
+      userId = bodyUserId
+    }
 
     if (!userId) {
       return reply.status(400).send({ error: 'userId não fornecido' })
     }
 
+    const { title, description, isPartOfDiet, timeOfMeal, dateOfMeal } =
+      mealSchema.parse(request.body)
+
     reply.setCookie('userId', userId, {
       path: '/',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    }) // veriicar se a gente não pode passar esse cookie para a criação do usuario, assim não precisariamos mais mandar ele no body request do post
+    }) // here a new cookie is set to autenticate the user
     await knex('dietLog').insert({
       id: crypto.randomUUID(),
       title,
@@ -59,16 +75,16 @@ export async function dietRoutes(app: FastifyInstance) {
       isPartOfDiet,
       dateOfMeal,
       timeOfMeal,
-      userId, // since I didn't made an autentication logic for this app I will use the userId as a value comming from the request.body, the user will have to put the value on the body of request
+      userId,
     })
-    return reply.status(201).send
+    return reply.status(201).send()
   })
 
   app.put('/:id', async (request, reply) => {
     const { id } = idSchema.parse(request.params)
     const userId = request.cookies.userId
     if (!userId) {
-      return reply.status(401).send({ error: 'unauthorized' })
+      return reply.status(401).send({ error: 'Não autorizado' })
     }
     const { title, description, isPartOfDiet, timeOfMeal, dateOfMeal } =
       mealSchema.parse(request.body)
@@ -87,7 +103,7 @@ export async function dietRoutes(app: FastifyInstance) {
     const { id } = idSchema.parse(request.params)
     const userId = request.cookies.userId
     if (!userId) {
-      return reply.status(401).send({ error: 'unauthorized' })
+      return reply.status(401).send({ error: 'Não autorizado' })
     }
     await knex('dietLog').where('id', id).andWhere('userId', userId).delete()
     return reply.status(204).send

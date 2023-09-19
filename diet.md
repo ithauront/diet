@@ -21,7 +21,7 @@ identificar usuario entre requisições (primary e forign key?)
 
 (v)deletar refeição
 
-listar todas as refeição de um usuario
+(v)listar todas as refeição de um usuario
 
 (v)listar apenas uma refeição
 
@@ -30,7 +30,7 @@ recuperar metricas de um usuario :
      quantidade dentro ou não da dieta 
      melhor sequencia de refeições dentro a dieta
 
-o usuario so pode interagir com as refeições que ele criou.
+(v)o usuario so pode interagir com as refeições que ele criou.
 
 esse é o frontend da aplicação para a gente poder ter ula ideia de como ficaria
 https://www.figma.com/community/file/1218573349379609244/Daily-Diet-%E2%80%A2-Desafio-React-Native
