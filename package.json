@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "knex": "node --loader tsx ./node_modules/knex/bin/cli.js"
+    "knex": "node --loader tsx ./node_modules/knex/bin/cli.js",
+    "test": "npx vitest"
   },
   "dependencies": {
     "@fastify/cookie": "^9.0.4",
@@ -18,6 +19,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/node": "18.16.1",
     "eslint": "^8.49.0",
-    "tsx": "^3.12.8"
+    "tsx": "^3.12.8",
+    "vitest": "^0.34.4"
   }
 }
