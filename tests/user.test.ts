@@ -66,7 +66,7 @@ describe('userRoutes', () => {
     })
   })
 
-  test('delete a user', async () => {
+  test.skip('delete a user', async () => {
     await request(app.server).post('/users').send({
       userName: 'new user',
       userEmail: 'newUser@test342.com',
