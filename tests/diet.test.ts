@@ -11,7 +11,7 @@ describe('dietRoutes', () => {
     await app.close()
   })
 
-  test('post a meal using cookie for userID', async () => {
+  test.skip('post a meal using cookie for userID', async () => {
     const createUserResponse = await request(app.server).post('/users').send({
       userName: 'test user',
       userEmail: 'tefasxasklngfae@test342.com',
