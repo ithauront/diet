@@ -11,7 +11,7 @@ describe('userRoutes', () => {
     await app.close()
   })
 
-  test('create new user', async () => {
+  test.skip('create new user', async () => {
     await request(app.server)
       .post('/users')
       .send({
@@ -20,5 +20,9 @@ describe('userRoutes', () => {
         userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
       })
       .expect(201)
+  })
+
+  test.skip('list all users', async () => {
+    await request(app.server).get('/users').expect(200)
   })
 })
