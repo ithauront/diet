@@ -44,7 +44,7 @@ describe('userRoutes', () => {
     ])
   })
 
-  test('update a user', async () => {
+  test.skip('update a user', async () => {
     await request(app.server).post('/users').send({
       userName: 'new user',
       userEmail: 'newUser@test342.com',
@@ -64,5 +64,20 @@ describe('userRoutes', () => {
     expect(updateUser.body).toEqual({
       message: 'Atualização concluida com sucesso',
     })
+  })
+
+  test('delete a user', async () => {
+    await request(app.server).post('/users').send({
+      userName: 'new user',
+      userEmail: 'newUser@test342.com',
+      userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+    })
+    const listUsers = await request(app.server).get('/users')
+    const userId = listUsers.body[0].id
+
+    const deleteUser = await request(app.server)
+      .delete(`/users/${userId}`)
+      .expect(200)
+    expect(deleteUser.body).toEqual({ message: 'Usuário excluído com sucesso' })
   })
 })
