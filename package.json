@@ -18,7 +18,9 @@
     "@rocketseat/eslint-config": "^2.1.0",
     "@types/bcrypt": "^5.0.0",
     "@types/node": "18.16.1",
+    "@types/supertest": "^2.0.12",
     "eslint": "^8.49.0",
+    "supertest": "^6.3.3",
     "tsx": "^3.12.8",
     "vitest": "^0.34.4"
   }
