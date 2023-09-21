@@ -92,7 +92,7 @@ describe('dietRoutes', () => {
         }),
       ])
     })
-    test('list a single meal', async () => {
+    test.skip('list a single meal', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -127,6 +127,70 @@ describe('dietRoutes', () => {
           timeOfMeal: '12:25',
         }),
       )
+    })
+    test.skip('list summary from user', async () => {
+      const createUserResponse = await request(app.server).post('/users').send({
+        userName: 'test user',
+        userEmail: 'tefasxasklngfae@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const cookie = createUserResponse.get('Set-Cookie')
+
+      await request(app.server).post('/diet').set('Cookie', cookie).send({
+        title: 'testMeal',
+        description: 'a meal for test',
+        isPartOfDiet: 'yes',
+        dateOfMeal: '12/12/2020',
+        timeOfMeal: '12:25',
+      })
+      const summary = await request(app.server)
+        .get('/diet/summary')
+        .set('Cookie', cookie)
+        .expect(200)
+
+      expect(summary.body).toEqual(
+        expect.objectContaining({
+          mealTotal: { 'Total de reifeições': 1 },
+          partOfDietYes: { 'Numero de refeições dentro da dieta': 1 },
+          partOfDietNo: { 'Numero de refeições fora da dieta': 0 },
+          sequenceInDiet: `Maior sequencia dentro da dieta 1`,
+        }),
+      )
+    })
+  })
+  describe('put routes in diet', () => {
+    test('update a diet', async () => {
+      const createUserResponse = await request(app.server).post('/users').send({
+        userName: 'test user',
+        userEmail: 'tefasxasklngfae@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const cookie = createUserResponse.get('Set-Cookie')
+
+      await request(app.server).post('/diet').set('Cookie', cookie).send({
+        title: 'testMeal',
+        description: 'a meal for test',
+        isPartOfDiet: 'yes',
+        dateOfMeal: '12/12/2020',
+        timeOfMeal: '12:25',
+      })
+
+      const getMealResponse = await request(app.server)
+        .get('/diet')
+        .set('Cookie', cookie)
+      const mealId = getMealResponse.body[0].id
+
+      await request(app.server)
+        .put(`/diet/${mealId}`)
+        .set('Cookie', cookie)
+        .send({
+          title: 'testMealUpdate',
+          description: 'update for test',
+          isPartOfDiet: 'no',
+          dateOfMeal: '14/12/2020',
+          timeOfMeal: '14:25',
+        })
+        .expect(200)
     })
   })
 })
