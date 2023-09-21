@@ -1732,7 +1732,7 @@ existe uma infinidade de modelos e serviços para fazer deploy da aplicação no
 aqui nos vamos usar uma forma mais smplies usando um serviço gerenciasdo que automatiza um pouco as coisas. se a gente usasse um serviço de plataforma algumas coisas que a gente vai fazer na mão eles ja entregam no pacote delesque é pago.
 primeiro passo. o codigo esta em typescript e nenhuma plataforma de deploy de node vai entender typescript então o primeiro passo é a gente converter isso para js
 a gente pode usar o proprio compilador do tpscrypt então podemos usar o tsc para compilar o codigo.
-indo la nas configuraç éoes do ts.config a gente pode descomentar o rootDir: e passar para ele onde esta nosso codigo ./src e tambem ddescomentar o outDir e colocar onde vai sair o codigo compilado, podemos colocar um endereço como ./build se agora no terminal a gente rodar npx tsc ele vai compilar e converter e criar uma pasta build (vai ter alguns erros que poderiamos ver se a gente fosse usar esse metodo o erro que diz é que nem tudo esta na pasta src pelo visto.)
+indo la nas configuraçéoes do ts.config a gente pode descomentar o rootDir: e passar para ele onde esta nosso codigo ./src e tambem descomentar o outDir e colocar onde vai sair o codigo compilado, podemos colocar um endereço como ./build se agora no terminal a gente rodar npx tsc ele vai compilar e converter e criar uma pasta build (vai ter alguns erros que poderiamos ver se a gente fosse usar esse metodo o erro que diz é que nem tudo esta na pasta src pelo visto.)
 so que esse processo é lento e com codigo grande fica ainda mais lento e nos temos ferramentas melhores.
 vamos instalar a tsup
 npm i tsup -D
