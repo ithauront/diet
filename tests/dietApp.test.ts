@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, test, describe, beforeEach, expect } from 'vitest'
+import { afterAll, beforeAll, test, describe, expect, beforeEach } from 'vitest'
 import { app } from '../src/app'
 import request from 'supertest'
 import { execSync } from 'node:child_process'
@@ -18,7 +18,7 @@ describe('dietRoutes', () => {
   })
 
   describe('post routes in diet', () => {
-    test.skip('post a meal using cookie for userID', async () => {
+    test('post a meal using cookie for userID', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -39,7 +39,7 @@ describe('dietRoutes', () => {
         .expect(201)
     })
 
-    test.skip('post a meal without cookie for userId', async () => {
+    test('post a meal without cookie for userId', async () => {
       await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -61,7 +61,7 @@ describe('dietRoutes', () => {
     })
   })
   describe('get routes in diet', () => {
-    test.skip('list all the meals', async () => {
+    test('list all the meals', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -92,7 +92,7 @@ describe('dietRoutes', () => {
         }),
       ])
     })
-    test.skip('list a single meal', async () => {
+    test('list a single meal', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -128,7 +128,7 @@ describe('dietRoutes', () => {
         }),
       )
     })
-    test.skip('list summary from user', async () => {
+    test('list summary from user', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -159,7 +159,7 @@ describe('dietRoutes', () => {
     })
   })
   describe('put routes in diet', () => {
-    test('update a diet', async () => {
+    test('update a meal', async () => {
       const createUserResponse = await request(app.server).post('/users').send({
         userName: 'test user',
         userEmail: 'tefasxasklngfae@test342.com',
@@ -191,6 +191,115 @@ describe('dietRoutes', () => {
           timeOfMeal: '14:25',
         })
         .expect(200)
+    })
+  })
+  describe('delete delete routes in diet', () => {
+    test('delete a meal', async () => {
+      const createUserResponse = await request(app.server).post('/users').send({
+        userName: 'test user',
+        userEmail: 'tefasxasklngfae@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const cookie = createUserResponse.get('Set-Cookie')
+
+      await request(app.server).post('/diet').set('Cookie', cookie).send({
+        title: 'testMeal',
+        description: 'a meal for test',
+        isPartOfDiet: 'yes',
+        dateOfMeal: '12/12/2020',
+        timeOfMeal: '12:25',
+      })
+
+      const getMealResponse = await request(app.server)
+        .get('/diet')
+        .set('Cookie', cookie)
+      const mealId = getMealResponse.body[0].id
+
+      await request(app.server)
+        .delete(`/diet/${mealId}`)
+        .set('Cookie', cookie)
+        .expect(204)
+    })
+  })
+
+  describe('userRoutes', () => {
+    beforeAll(async () => {
+      await app.ready()
+    })
+
+    afterAll(async () => {
+      await app.close()
+    })
+
+    beforeEach(() => {
+      execSync('npm run knex migrate:rollback --all')
+      execSync('npm run knex migrate:latest')
+    })
+
+    test('create new user', async () => {
+      await request(app.server)
+        .post('/users')
+        .send({
+          userName: 'test user',
+          userEmail: 'test@test342.com',
+          userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+        })
+        .expect(201)
+    })
+
+    test('list all users', async () => {
+      await request(app.server).post('/users').send({
+        userName: 'new user',
+        userEmail: 'newUser@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const listUsers = await request(app.server).get('/users').expect(200)
+
+      expect(listUsers.body).toEqual([
+        expect.objectContaining({
+          userName: 'new user',
+          userEmail: 'newUser@test342.com',
+        }),
+      ])
+    })
+
+    test('update a user', async () => {
+      await request(app.server).post('/users').send({
+        userName: 'new user',
+        userEmail: 'newUser@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const listUsers = await request(app.server).get('/users')
+      const userId = listUsers.body[0].id
+
+      const updateUser = await request(app.server)
+        .put(`/users/${userId}`)
+        .send({
+          userName: 'updated user',
+          userPassword: 'updatedPassword',
+        })
+        .expect(200)
+
+      expect(updateUser.body).toEqual({
+        message: 'Atualização concluida com sucesso',
+      })
+    })
+
+    test('delete a user', async () => {
+      await request(app.server).post('/users').send({
+        userName: 'new user',
+        userEmail: 'newUser@test342.com',
+        userPassword: 'testasjenshasf', // its important to remember the schemes for validation of email and passoword to avoid problems in the tests
+      })
+      const listUsers = await request(app.server).get('/users')
+      const userId = listUsers.body[0].id
+
+      const deleteUser = await request(app.server)
+        .delete(`/users/${userId}`)
+        .expect(200)
+      expect(deleteUser.body).toEqual({
+        message: 'Usuário excluído com sucesso',
+      })
     })
   })
 })
