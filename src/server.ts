@@ -9,3 +9,7 @@ app
   .then(() => {
     console.log('http server running')
   })
+  .catch((err) => {
+    console.error('Error starting server:', err)
+    process.exit(1)
+  })
