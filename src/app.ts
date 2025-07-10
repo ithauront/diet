@@ -14,3 +14,7 @@ app.register(dietRoutes, {
 app.register(userRoutes, {
   prefix: 'users',
 })
+
+app.get('/healthz', async (request, reply) => {
+  return reply.status(200).send({ status: 'ok' })
+})
