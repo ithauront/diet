@@ -10,3 +10,6 @@ db/*.db
 
 # build
 dist
+
+diet.md
+novoProjeto.md
