@@ -147,6 +147,8 @@ The Diet API is deployed and live on Render:
 
 🔗 https://diet-pilo.onrender.com
 
+ ⚠️ This API does not expose a public / route and will return a 404 if accessed directly without a defined path.
+
 📘 Swagger Documentation:
 
 🔗 https://diet-pilo.onrender.com/docs
@@ -156,7 +158,6 @@ This deployment uses a PostgreSQL database hosted on Render's managed database s
 To test the API, you can use tools like Insomnia or Postman.
 The first step is to create a user via the /users route and use the returned userId to authenticate.
 
- ⚠️ This API does not expose a public / route and will return a 404 if accessed directly without a defined path.
 
 #### ☁️ Deployment Notes
 
