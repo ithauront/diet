@@ -17,6 +17,7 @@ export async function userRoutes(app: FastifyInstance) {
     schema: {
       summary: 'List all registered users (internal use only)',
       tags: ['Users'],
+      security: [{ userIdCookie: [] }], // I ask for userCookie since this is a study project, in a real live project this route would have some sort of admin auth protection
       response: {
         200: {
           description: 'Users list',
@@ -61,7 +62,10 @@ export async function userRoutes(app: FastifyInstance) {
         required: ['userName', 'userPassword'],
         properties: {
           userName: { type: 'string' },
-          userEmail: { type: 'string', format: 'email' },
+          userEmail: {
+            type: 'string',
+            format: 'email',
+          },
           userPassword: { type: 'string', minLength: 8 },
         },
       },
@@ -78,6 +82,20 @@ export async function userRoutes(app: FastifyInstance) {
           type: 'object',
           properties: {
             message: { type: 'string' },
+          },
+        },
+        409: {
+          description: 'Email already in use',
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
+          },
+        },
+        500: {
+          description: 'Internal server error',
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
           },
         },
       },
@@ -122,6 +140,7 @@ export async function userRoutes(app: FastifyInstance) {
     schema: {
       summary: "Update a user's name and password",
       tags: ['Users'],
+      security: [{ userIdCookie: [] }],
       params: {
         type: 'object',
         properties: {
@@ -194,6 +213,7 @@ export async function userRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Delete a user by ID',
       tags: ['Users'],
+      security: [{ userIdCookie: [] }],
       params: {
         type: 'object',
         properties: {

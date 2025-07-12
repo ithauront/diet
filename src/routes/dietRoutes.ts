@@ -21,6 +21,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'List meals for authenticated user',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       response: {
         200: {
           description: 'List of meals',
@@ -61,6 +62,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Get meal by ID',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       params: {
         type: 'object',
         properties: {
@@ -111,6 +113,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Get summary for authenticated user',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       response: {
         200: {
           description: 'Diet summary metrics',
@@ -196,6 +199,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Create new meal',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       body: {
         type: 'object',
         required: [
@@ -272,6 +276,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Update meal by ID',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       params: {
         type: 'object',
         properties: {
@@ -334,6 +339,7 @@ export async function dietRoutes(app: FastifyInstance) {
     schema: {
       summary: 'Delete meal by ID',
       tags: ['Meals'],
+      security: [{ userIdCookie: [] }],
       params: {
         type: 'object',
         properties: {
