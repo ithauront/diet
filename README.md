@@ -15,6 +15,30 @@ The full API is documented using Swagger and available publicly:
 All routes, parameters, expected inputs and outputs are described in English.
 ⚠️ However, API responses are in Portuguese, as this backend was designed for a Portuguese-speaking application.
 
+✅ How to use the Swagger UI to test the API
+
+* Go to POST /users and create a new user.
+
+  ⚠️ Important: Use a unique email address to avoid conflict errors.
+
+* Copy the userId returned in the response message.
+
+* Click the "Authorize" button at the top right of the Swagger UI.
+
+* In the userId cookie field, paste your ID like this:
+  ```userId=PASTE_YOUR_USER_ID_HERE```
+
+You can now access authenticated routes such as:
+
+   GET /meals
+
+   POST /meals
+
+   GET /meals/summary
+and others
+
+To test with another user, just repeat from step 1.
+
 ## ✅ Features
 
   ✅ User creation with password hashing
