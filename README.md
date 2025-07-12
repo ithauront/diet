@@ -7,6 +7,14 @@ This project was designed to simulate a full-featured dietary log system with us
     The mobile frontend, however, was intentionally not connected to this API, as it was developed primarily to practice local storage management on real devices.
     While both projects share logic and naming, their integration was not the focus — instead, the idea was to build parallel frontend/backend projects for learning purposes.
 
+## 📘 Documentation
+
+The full API is documented using Swagger and available publicly:
+🔗 [Swagger Docs](https://diet-pilo.onrender.com/docs)
+
+All routes, parameters, expected inputs and outputs are described in English.
+⚠️ However, API responses are in Portuguese, as this backend was designed for a Portuguese-speaking application.
+
 ## ✅ Features
 
   ✅ User creation with password hashing
@@ -40,6 +48,10 @@ This project was designed to simulate a full-featured dietary log system with us
   ✅ .env schema validation
 
   ✅ Database switching (SQLite or PostgreSQL)
+ 
+  ✅ Swagger API Documentation
+
+
 
   ## 🧠 What I Practiced
 
@@ -60,6 +72,8 @@ This project was designed to simulate a full-featured dietary log system with us
 * Structuring a backend project that simulates production behavior
 
 * Building parallel frontend/backend projects with distinct learning goals (e.g., local storage vs. full API integration)
+  
+* Using Swagger to document and expose backend routes
 
 
 ## 🛠 Tech Stack
@@ -81,6 +95,7 @@ This project was designed to simulate a full-featured dietary log system with us
   * Tsup — for build bundling
 
 ## 🚀 Getting Started
+
 #### 🔧 Clone the repository
 ```bash
 git clone https://github.com/ithauront/diet.git
@@ -126,25 +141,55 @@ npm run knex migrate:latest
 npm run dev
 ```
 
-## ☁️ Deployment Notes
+## 📡 Live API
 
-This project was initially developed using SQLite for ease of local development and testing. However, when preparing the application for production deployment, it was adapted to work with PostgreSQL, hosted via Render.
+The Diet API is deployed and live on Render:
 
-This change involved:
+🔗 https://diet-pilo.onrender.com
 
-  * Updating the .env schema to support both sqlite and pg drivers.
+ ⚠️ This API does not expose a public / route and will return a 404 if accessed directly without a defined path.
 
-  * Making the database connection conditional based on DATABASE_CLIENT.
+📘 Swagger Documentation:
 
-  * Installing the pg package for PostgreSQL support.
+🔗 https://diet-pilo.onrender.com/docs
 
-  * Modifying the PORT parsing logic using z.coerce.number() to handle string values from the Render platform.
+This deployment uses a PostgreSQL database hosted on Render's managed database service. All routes are protected and require proper session authentication via cookies.
 
-  * Adding host: '0.0.0.0' to the server config for compatibility with external hosts.
+To test the API, you can use tools like Insomnia or Postman.
+The first step is to create a user via the /users route and use the returned userId to authenticate.
 
-  * Building the TypeScript source with tsup before deployment.
 
-  * Adding production environment variables via the Render dashboard.
+#### ☁️ Deployment Notes
+
+This project was initially developed using SQLite for simplicity during local development.
+When preparing for production deployment, it was refactored to support PostgreSQL on Render, a cloud platform that automates server hosting.
+🔄 Migration Steps from SQLite to PostgreSQL:
+
+* Updated the environment schema to include DATABASE_CLIENT with support for sqlite and pg.
+
+* Adjusted the database connection logic in database.ts to switch between SQLite and PostgreSQL depending on DATABASE_CLIENT.
+
+* Installed the PostgreSQL driver (pg) as a production dependency.
+
+* Added host: '0.0.0.0' in the server listener to allow external connections from Render.
+
+* Converted the PORT variable to use z.coerce.number() so it could parse the string passed by Render.
+
+* Created a build script using tsup for bundling the TypeScript code before deploying.
+
+* Added a start script to run node dist/server.js after the build.
+
+* Added a .eslintignore and .gitignore entry for dist, node_modules, and .db files.
+
+* Configured Render’s deployment pipeline to:
+
+     Install dependencies (npm install)
+
+     Run latest migrations (npm run knex -- migrate:latest)
+
+     Build the project (npm run build)
+
+     Start the app
 
 
 ## 🧪 Running Tests
