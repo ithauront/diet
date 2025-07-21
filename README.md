@@ -106,7 +106,7 @@ To test with another user, just repeat from step 1.
 
   * Knex — SQL query builder
 
-  * SQLite (or PostgreSQL)
+  * SQLite
 
  *  Zod — validation
 
